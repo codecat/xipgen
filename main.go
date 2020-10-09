@@ -11,12 +11,19 @@ import (
 )
 
 func main() {
-	if len(os.Args) == 1 {
-		fmt.Println("Usage: xipgen <ip> [subdomain]")
-		return
+	sip := ""
+
+	if len(os.Args) >= 2 {
+		sip = os.Args[1]
+	} else {
+		conn, err := net.Dial("udp", "8.8.8.8:80")
+		if err != nil {
+			sip = "127.0.0.1"
+		}
+		defer conn.Close()
+		sip = (conn.LocalAddr().(*net.UDPAddr)).IP.String()
 	}
 
-	sip := os.Args[1]
 	sub := ""
 	if len(os.Args) >= 3 {
 		sub = os.Args[2]
